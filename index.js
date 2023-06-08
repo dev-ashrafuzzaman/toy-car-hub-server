@@ -29,12 +29,19 @@ async function run() {
     // database and collection
     const toyCarsCollection = client.db('toyMarket').collection('toycars');
 
-    app.get('/toycars', async (req, res) => {
+    app.get('/allToyCars', async (req, res) => {
         const cursor = toyCarsCollection.find();
         const result = await cursor.toArray();
         res.send(result);
     })
 
+    // Add a toy to Database
+    app.post('/addToy', async (req, res) => {
+      const addToy = req.body;
+      console.log(addToy)
+      const result = await toyCarsCollection.insertOne(addToy);
+      res.send(result);
+  });
 
 
 
