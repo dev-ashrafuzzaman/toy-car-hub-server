@@ -1,6 +1,6 @@
 const express = require("express");
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 5000;
@@ -37,7 +37,7 @@ async function run() {
     })
 
     // Get On Product by Object id
-    app.get('/allToyCars/:id', async (req, res) => {
+    app.get('/allToy/:id', async (req, res) => {
       const id = req.params.id;
       const quary = { _id: new ObjectId(id) }
       const result = await toyCarsCollection.findOne(quary);
@@ -49,6 +49,18 @@ async function run() {
       let dataQuery = {} ;
       if(req.query?.SubCategory){
           dataQuery = {SubCategory: req.query.SubCategory}
+      }
+      console.log(dataQuery)
+      const result = await toyCarsCollection.find(dataQuery).toArray();
+      res.send(result);
+
+  })
+
+    // Search by Login User email
+    app.get('/sellerEmail' , async(req , res) =>{
+      let dataQuery = {} ;
+      if(req.query?.sellerEmail){
+          dataQuery = {sellerEmail: req.query.sellerEmail}
       }
       console.log(dataQuery)
       const result = await toyCarsCollection.find(dataQuery).toArray();
