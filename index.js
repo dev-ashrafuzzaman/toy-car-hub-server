@@ -24,16 +24,37 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+     client.connect(); // Vercel Deploy - Await
 
     // database and collection
     const toyCarsCollection = client.db('toyMarket').collection('toycars');
 
+    // Get All Products from Database
     app.get('/allToyCars', async (req, res) => {
         const cursor = toyCarsCollection.find();
         const result = await cursor.toArray();
         res.send(result);
     })
+
+    // Get On Product by Object id
+    app.get('/allToyCars/:id', async (req, res) => {
+      const id = req.params.id;
+      const quary = { _id: new ObjectId(id) }
+      const result = await toyCarsCollection.findOne(quary);
+      res.send(result);
+  })
+
+    // Search by Product Sub Category
+    app.get('/searchBySubCategory' , async(req , res) =>{
+      let dataQuery = {} ;
+      if(req.query?.SubCategory){
+          dataQuery = {SubCategory: req.query.SubCategory}
+      }
+      console.log(dataQuery)
+      const result = await toyCarsCollection.find(dataQuery).toArray();
+      res.send(result);
+
+  })
 
     // Add a toy to Database
     app.post('/addToy', async (req, res) => {
