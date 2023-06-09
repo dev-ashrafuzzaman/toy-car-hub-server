@@ -86,6 +86,7 @@ async function run() {
         }
         
     };
+    
       console.log(dataQuery)
       const result = await toyCarsCollection.find(dataQuery ,options).toArray();
       res.send(result);
