@@ -74,12 +74,20 @@ async function run() {
 
     // Search by Login User email
     app.get('/sellerEmail', async (req, res) => {
+      const sort = req.query.sort;
       let dataQuery = {};
       if (req.query?.sellerEmail) {
         dataQuery = { sellerEmail: req.query.sellerEmail }
       }
+      
+      const options = {
+        sort: { 
+            "price": sort === 'asc' ? 1 : -1
+        }
+        
+    };
       console.log(dataQuery)
-      const result = await toyCarsCollection.find(dataQuery).toArray();
+      const result = await toyCarsCollection.find(dataQuery ,options).toArray();
       res.send(result);
 
     })
