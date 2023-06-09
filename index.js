@@ -1,13 +1,14 @@
 const express = require("express");
-require('dotenv').config()
+require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 5000;
 
-//Using_Middleware
+// Using Middleware
 app.use(cors());
 app.use(express.json());
+
 
 // MongoDB Script
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.vin9bep.mongodb.net/?retryWrites=true&w=majority`;
@@ -28,6 +29,8 @@ async function run() {
 
     // database and collection
     const toyCarsCollection = client.db('toyMarket').collection('toycars');
+
+  
 
     // Get All Products from Database
     app.get('/allToyCars', async (req, res) => {
@@ -89,11 +92,10 @@ async function run() {
       res.send(result);
     });
 
-    // Data Update
-    app.put('/allToyCars/:id', async (req, res) => {
+    // Product Update Query
+    app.patch('/updateProduct/:id', async(req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) }
-      const options = { upsert: true };
       const toyDetailsUpdate = req.body;
       const toyDetails = {
         $set: {
@@ -102,7 +104,7 @@ async function run() {
           productDetails: toyDetailsUpdate.productDetails
         }
       }
-      const result = await toyCarsCollection.updateOne(filter, toyDetails, options);
+      const result = await toyCarsCollection.updateOne(filter, toyDetails);
       res.send(result)
 
     })
@@ -129,7 +131,7 @@ run().catch(console.dir);
 
 // Default Route
 app.get("/", (req, res) => {
-  res.send("toy marketplace server is running sucessfully");
+  res.send("toy marketplace server is running successfully");
 });
 
 app.listen(port, () => {
